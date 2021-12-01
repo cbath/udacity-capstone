@@ -26,6 +26,11 @@ jobs:
           command: |
             cd /home/circleci/repo
             hadolint /home/circleci/repo//build/hello_app/apache.Dockerfile
+      # build the application image
+      #- run: docker build -t company/app:$CIRCLE_BRANCH .
+
+      # deploy the image
+      #- run: docker push company/app:$CIRCLE_BRANCH
             
 workflows:
   default:
