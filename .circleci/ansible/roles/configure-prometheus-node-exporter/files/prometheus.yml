@@ -1,0 +1,13 @@
+# /etc/prometheus/prometheus.yml
+global:
+  scrape_interval: 15s
+  external_labels:
+    monitor: 'prometheus'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'udapeople'
+    static_configs:
+      - targets: ['ec2-34-239-101-192.compute-1.amazonaws.com:9100','ec2-18-212-165-25.compute-1.amazonaws.com:9090']

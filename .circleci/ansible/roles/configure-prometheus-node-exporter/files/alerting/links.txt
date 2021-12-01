@@ -1,0 +1,13 @@
+[alerts]
+https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/
+https://prometheus.io/docs/alerting/latest/alertmanager/
+
+[installation]
+https://codewizardly.com/prometheus-on-aws-ec2-part1/ 
+
+[dashboard]
+http://ec2-3-82-189-67.compute-1.amazonaws.com:9090/targets
+http://ec2-3-82-189-67.compute-1.amazonaws.com:9093/#/alerts
+
+
+etc/systemd/system/alertmanager.service

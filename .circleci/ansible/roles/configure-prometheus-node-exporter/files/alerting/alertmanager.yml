@@ -1,0 +1,14 @@
+# /etc/prometheus/alertmanager.yml
+route:
+  group_by: [Alertname]
+  receiver: email-me
+
+receivers:
+- name: email-me
+  email_configs:
+  - to: craigbath@outlook.com
+    from: cbath@gmail.com
+    smarthost: smtp.gmail.com:587
+    auth_username: cbath6@gmail.com
+    auth_identity: cbath6@gmail.com
+    auth_password: hsudgvnsihaqsvdc
