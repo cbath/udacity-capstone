@@ -1,0 +1,2 @@
+[ports]
+changed all to 80 instead of 8080

@@ -9,7 +9,14 @@
 
 ### Containerisation
 
-- re-use the `app.py` example from the Kubernetes project
+Simple:
+
+```shell
+
+```
+
+Medium:
+  - re-use the `app.py` example from the Kubernetes project
 
 ### CI/CD
 
@@ -27,13 +34,14 @@
 - I'd like to copy the first project setup and cloudformation setup, but may be difficult with all the parts
 - Basic Structure in order:
   - EC2 instance
-  - EKS cluster
+  - EKS/Kubernetes cluster
   - ELB
   - Cloudfront Distribution
   
 - Medium:
   - auto-scaling group
   - multi-region
+
 - Complex:
   - private vs public subnets
 
