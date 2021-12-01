@@ -30,6 +30,6 @@ jobs:
 workflows:
   default:
     jobs:
-       - build-images
+      - build-images
       #- test-images:
       #    requires: [build-images]
