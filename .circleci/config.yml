@@ -12,18 +12,17 @@ jobs:
           command: |
             sudo apt update -y
             sudo apt install -y vim
-            sudo pip install --upgrade pip
             sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             sudo chmod +x /bin/hadolint
       - run:
           name: Build Images
           command: |
-            cd /home/circleci/repo
+            cd repo
             docker build -f ./build/hello_app/apache.Dockerfile --tag hello_app ./build/hello_app
       - run:
           name: Lint Images
           command: |
-            cd /home/circleci/repo
+            cd repo
             hadolint ./build/hello_app/apache.Dockerfile
             
 workflows:
