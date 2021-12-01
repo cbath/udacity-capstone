@@ -25,12 +25,19 @@ jobs:
           name: Lint Images
           command: |
             cd /home/circleci/repo
-            hadolint /home/circleci/repo//build/hello_app/apache.Dockerfile
+            hadolint apache.Dockerfile
+      
       # build the application image
-      #- run: docker build -t company/app:$CIRCLE_BRANCH .
-
-      # deploy the image
-      #- run: docker push company/app:$CIRCLE_BRANCH
+      - run: 
+          name: Tag images
+          command: |
+            echo "$DOCKER_PASSWORD" > docker_password.txt
+            cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
+            docker tag hello_app:latest $DOCKER_ACCOUNT/hello_app
+      - run: 
+          name: Push images
+          command: |
+            docker push cbath/hello_app
             
 workflows:
   default:
