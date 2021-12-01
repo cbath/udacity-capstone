@@ -25,12 +25,15 @@
 ### Infrastructure
 
 - I'd like to copy the first project setup and cloudformation setup, but may be difficult with all the parts
-- Basic Structure:
-  - Cloudfront Distribution
+- Basic Structure in order:
+  - EC2 instance
+  - EKS cluster
   - ELB
-  - EC2 instance/EKS cluster?
+  - Cloudfront Distribution
+  
 - Medium:
   - auto-scaling group
+  - multi-region
 - Complex:
   - private vs public subnets
 
