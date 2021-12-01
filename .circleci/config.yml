@@ -14,20 +14,37 @@ jobs:
             sudo apt install -y vim
             sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             sudo chmod +x /bin/hadolint
+            #TODO - DOCKER CLI
       - run:
           name: Build Images
           command: |
-            cd repo
-            docker build -f ./build/hello_app/apache.Dockerfile --tag hello_app ./build/hello_app
+            cd ~/repo
+            docker build -f apache.Dockerfile --tag hello_app .
       - run:
           name: Lint Images
           command: |
-            cd repo
-            hadolint ./build/hello_app/apache.Dockerfile
+            cd /home/circleci/repo
+            hadolint /home/circleci/repo//build/hello_app/apache.Dockerfile
+  build:
+    machine: true  #https://circleci.com/docs/2.0/building-docker-images/
+    steps:
+      - checkout
+      # start proprietary DB using private Docker image
+      # wsith credentials stored in the UI
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+          docker run -d --name db company/proprietary-db:1.2.3
+
+      # build the application image
+      #- run: docker build -t company/app:$CIRCLE_BRANCH .
+      
+      # deploy the image
+      #- run: docker push company/app:$CIRCLE_BRANCH
             
 workflows:
   default:
     jobs:
       - build-images
+      - build
       #- test-images:
       #    requires: [build-images]
