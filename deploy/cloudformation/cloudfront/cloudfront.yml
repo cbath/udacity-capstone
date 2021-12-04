@@ -15,7 +15,7 @@ Resources:
         Enabled: True
         DefaultCacheBehavior:
           ViewerProtocolPolicy: allow-all 
-          TargetOriginId: CapstoneOriginTarget
+          TargetOriginId: CapstoneOrigin
         Origins:
           - Id: CapstoneOrigin
             DomainName: !Sub "${BackendDNS}"
