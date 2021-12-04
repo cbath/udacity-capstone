@@ -6,36 +6,15 @@ Description: >
 # !Ref - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html
 
 Parameters:
-    EnvironmentName:
-        Description: An environment name that will be prefixed to resource names
-        Type: String
-    EnvironmentVPC:
-        Description: The VPC for all environment architecture
-        Type: String
-    PubSubnetEast1A:
-        Description: Public Subnet us-east-1a
-        Type: String
-    PubSubnetEast1B:
-        Description: Public Subnet us-east-1b
-        Type: String
-    PrivSubnetEast1A:
-        Description: Private Subnet us-east-1a
-        Type: String
-    PrivSubnetEast1B:
-        Description: Private Subnet us-east-1b
-        Type: String
-    PrivSubnetsAll:
-        Description: All private subnets for auto-scaling
-        Type: CommaDelimitedList
-    UbuntuAMI:
-        Description: AMI ID for an Ubuntu 18 image
-        Type: String
+  ID:
+    Description: Unique identifier.
+    Type: String
 
 Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub Capstone-${ID}
+      GroupName: !Sub Capstone-TEST
       GroupDescription: Allow port 22 and port 8080
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -57,7 +36,7 @@ Resources:
       ImageId: ami-083654bd07b5da81d   # Ubuntu 20.4 LTS
       Tags:
         - Key: Name
-          Value: !Sub capstone-backend-${ID}
+          Value: !Sub capstone-backend-TEST
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 #Outputs:

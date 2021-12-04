@@ -1,0 +1,10 @@
+# 
+
+aws cloudformation deploy \
+--template-file $dir/servers.yml \
+--stack-name "capstone-backend-1234" \
+--parameter-overrides ID="1234"  \
+--tags project=capstone
+
+
+aws cloudformation create-stack --stack-name capstone-test --template-body file://servers.yml --parameters  file://servers-parameters.json ID=test
