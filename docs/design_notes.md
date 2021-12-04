@@ -1,11 +1,15 @@
 # Design Notes
 
+## Implementation Plan
+
+1. Simple containerised architecture with manual servers
+2. 
+
 ## Architecture
 
 ### Blue/Green Deployments
 
 - Utilise Cloudfront and it's ELB origin setting
-
 
 ### Containerisation
 
@@ -35,7 +39,8 @@ Medium:
 
 ### Infrastructure
 
-- I'd like to copy the first project setup and cloudformation setup, but may be difficult with all the parts
+I'd like to copy the first project setup and cloudformation setup, but may be difficult with all the parts
+
 - Basic Structure in order:
   - EC2 instance
   - EKS/Kubernetes cluster
@@ -50,5 +55,4 @@ Medium:
   - private vs public subnets
 
 
-## 
 
