@@ -79,6 +79,7 @@ jobs:
   #            docker scan hello_app
 
   create-infrastructure:
+    working_directory: ~/repo
     docker:
       - image: amazon/aws-cli
     steps:
@@ -88,7 +89,7 @@ jobs:
       - run:
           name: Create Backend Infrastructure
           command: |
-              export dir=deploy/cloudformation/servers
+              export dir=~/repo/deploy/cloudformation/servers
               aws cloudformation deploy \
               --template-file $dir/servers.yml \
               --stack-name "capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -97,8 +98,8 @@ jobs:
       - run:
           name: Add backend ip to ansible inventory
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend--${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
-            echo $BACKEND_IP >> .circleci/ansible/inventory.txt
+            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
+            echo $BACKEND_IP >> ~/repo/deploy/ansible/inventory.txt
             echo $BACKEND_IP
       # Save workspace for subsequent jobs (i.e. test)
       - persist_to_workspace:
