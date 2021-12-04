@@ -1,4 +1,52 @@
-# 
+[EC2 Instances]
+aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text
+
+
+[Cloud Formation]
+aws cloudformation list-stacks
+aws cloudformation delete-stack --stack-name "arn:aws:cloudformation:us-east-1:604691310262:stack/InitialStack/4d465960-43f4-11ec-a482-0e8ae6186b37"
+
+[Multiple Stacks]
+aws cloudformation list-stacks --stack-status-filter ROLLBACK_COMPLETE
+aws cloudformation list-stacks --stack-status-filter ROLLBACK_COMPLETE --query "StackSummaries[*].{stack_id:StackId}" --output text
+badstacks=$(aws cloudformation list-stacks --stack-status-filter ROLLBACK_COMPLETE --query "StackSummaries[*].{stack_id:StackId}" --output text)
+goodstacks=$(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE  --query "StackSummaries[*].{stack_id:StackId}" --output text)
+
+for i in $goodstacks; do 
+aws cloudformation delete-stack --stack-name $i
+printf "$i \n"
+done
+
+
+[S3 Buckets]
+buckets=$(aws s3api list-buckets --query "Buckets[].Name" --output text)
+
+for i in $buckets; do 
+aws s3 rm --recursive  s3://$i 
+printf "$i \n"
+done
+
+[postgres]
+SELECT datname FROM pg_database;
+SELECT *FROM pg_settings WHERE name = 'port';
+SELECT inet_server_addr();
+SELECT schema_name FROM information_schema.schemata;
+SELECT nspname FROM pg_catalog.pg_namespace;
+
+[prometheus]
+prometheus server = ssh -i "udacity.pem" ubuntu@ec2-3-82-189-67.compute-1.amazonaws.com
+node exporter =     ssh -i "udacity.pem" ubuntu@ec2-54-152-191-201.compute-1.amazonaws.com
+dashboard = http://ec2-3-82-189-67.compute-1.amazonaws.com:9090/targets
+prometheus config = /etc/prometheus/prometheus.yml
+
+sudo vi test.txt
+sudo mv test.txt /etc/prometheus/prometheus.yml && sudo systemctl restart prometheus
+
+[node debugging]
+pm2 logs
+curl localhost:3030/api/status
+netstat -an|grep 3030
+
 
 aws cloudformation deploy \
 --template-file $dir/servers.yml \

@@ -31,8 +31,8 @@
 - name: Log into Docker
   become: yes
   shell: |
-    echo "$DOCKER_PASSWORD" > /tmp/docker_password.txt
-    sudo cat /tmp/docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
+    sudo echo "$DOCKER_PASSWORD" > /tmp/docker_password.txt
+    #sudo cat /tmp/docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
     #sudo docker login --username $DOCKER_ACCOUNT --password $DOCKER_PASSWORD
 
 - name: Download Images

@@ -135,10 +135,6 @@ jobs:
           command: |
             yum install -y epel-release
             yum install -y tar gzip ansible
-      # Reuse the workspace from the build job
-      - attach_workspace:
-          name: Attach Workspace
-          at: ~/
       - add_ssh_keys:
           name: Add ssh keys with fingerprint
           fingerprints:
