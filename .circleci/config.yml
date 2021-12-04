@@ -144,10 +144,11 @@ workflows:
       #- scan-images:
       #    requires: [build-images]
       - create-infrastructure:
+          requires: [build-images,test-images]
           filters:
             branches:
               only: main
       - configure-infrastructure:
-          requires: [test-images,create-infrastructure]
+          requires: [create-infrastructure]
 
           
