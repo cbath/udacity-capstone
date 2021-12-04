@@ -2,8 +2,13 @@
 
 ## Next Steps
 
-1. Containerise and test/scan in Circle CI
-2. Create a manual server and use ansible to to setup docker
+1. ELB Setup
+   1. Create target groups - aka instances
+   2. Create an LB listener which a ports for directing traffic
+   3. Create Internet facing Application LB
+
+2. CloudFront Setup
+   1. Origin = ELB
 
 
 ## Architecture
