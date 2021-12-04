@@ -39,9 +39,14 @@ Resources:
           Value: !Sub capstone-backend-${ID}
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
-#Outputs:
-#  WebAppLBURL:
-#    Description: The DNS of the load balancer
-#    Value: !Join [ "", [ 'http://',!GetAtt WebAppLB.DNSName ] ]
-#    Export:
-#      Name: !Sub ${EnvironmentName}-LoadBalancer-URL
+Outputs:
+  BackendEndpoint:
+    Description: The Endpoint of the backend application
+    Value: !Join [ "", [ 'http://',!GetAtt EC2Instance.PublicDnsName ] ]
+    Export:
+      Name: !Sub ${ID}-PublicDnsName
+  BackendIP:
+    Description: The public IP of the backend application
+    Value: !Join [ "", [ 'http://',!GetAtt EC2Instance.PublicIp ] ]
+    Export:
+      Name: !Sub ${ID}-PublicIP

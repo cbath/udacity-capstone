@@ -32,10 +32,10 @@
   become: yes
   shell: |
     echo "$DOCKER_PASSWORD" > /tmp/docker_password.txt
-    sudo cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
+    sudo cat /tmp/docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
     #sudo docker login --username $DOCKER_ACCOUNT --password $DOCKER_PASSWORD
 
-- name: Down Images
+- name: Download Images
   become: yes
   shell: |
     sudo docker pull cbath/hello_app
