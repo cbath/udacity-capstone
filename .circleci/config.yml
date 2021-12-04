@@ -112,17 +112,6 @@ jobs:
               --stack-name "capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=capstone
-      - run:
-          name: Add backend ip to ansible inventory
-          command: |
-            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
-            echo $BACKEND_IP >> ~/repo/deploy/ansible/inventory.txt
-            echo $BACKEND_IP
-      # Save workspace for subsequent jobs (i.e. test)
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - repo/deploy/ansible/inventory.txt
  
   configure-infrastructure:
     working_directory: ~/repo
@@ -140,10 +129,17 @@ jobs:
           fingerprints:
             - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
       - run:
+          name: Add backend ip to ansible inventory
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
+            echo $BACKEND_IP >> ~/repo/deploy/ansible/inventory.txt
+            echo $BACKEND_IP
+      - run:
           name: Configure server
           command: |
              cd ~/repo/deploy/ansible
              echo "$DOCKER_PASSWORD" > docker_password.txt
+             cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
             # ansible-playbook --private-key secrets/udacity.pem -i deploy/ansible/inventory.txt deploy/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure   
