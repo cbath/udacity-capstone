@@ -14,7 +14,7 @@ Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub Capstone-TEST
+      GroupName: !Sub Capstone-${ID}
       GroupDescription: Allow port 22 and port 8080
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -36,7 +36,7 @@ Resources:
       ImageId: ami-083654bd07b5da81d   # Ubuntu 20.4 LTS
       Tags:
         - Key: Name
-          Value: !Sub capstone-backend-TEST
+          Value: !Sub capstone-backend-${ID}
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 #Outputs:
