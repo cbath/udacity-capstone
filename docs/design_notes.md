@@ -1,9 +1,10 @@
 # Design Notes
 
-## Implementation Plan
+## Next Steps
 
-1. Simple containerised architecture with manual servers
-2. 
+1. Containerise and test/scan in Circle CI
+2. Create a manual server and use ansible to to setup docker
+
 
 ## Architecture
 

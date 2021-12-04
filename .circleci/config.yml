@@ -2,9 +2,7 @@ version: 2.1
 
 jobs:
   build-images:
-    #docker:
-    #  - image: circleci/node:13.8.0    #circleci/python:3.6.7-stretch
-    machine: true  #https://circleci.com/docs/2.0/building-docker-images/
+    machine: true           #https://circleci.com/docs/2.0/building-docker-images/
     working_directory: ~/repo
     steps:
       - checkout
@@ -55,7 +53,7 @@ jobs:
             command: |
               docker container run -d -p 8080:80  $DOCKER_ACCOUNT/hello_app
               curl localhost:8080
-
+              
     scan-images:
         machine: true 
         working_directory: ~/repo
