@@ -2,13 +2,9 @@
 
 ## Next Steps
 
-1. ELB Setup
-   1. Create target groups - aka instances
-   2. Create an LB listener which a ports for directing traffic
-   3. Create Internet facing Application LB
-
-2. CloudFront Setup
-   1. Origin = ELB
+2. CloudFront Distrubtion Setup
+   1. Grab EC2 DNS
+   2. Update orgin to be EC2 DNS 
 
 
 ## Architecture
