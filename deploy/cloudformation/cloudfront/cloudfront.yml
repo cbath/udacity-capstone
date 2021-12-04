@@ -12,13 +12,17 @@ Resources:
     Type: AWS::CloudFront::Distribution  
     Properties:
       DistributionConfig:
-        Origins:
-          - DomainName: !Sub "${BackendDNS}"
-            Id: CapstoneOrigin
-            CustomOriginConfig:
-              - OriginProtocolPolicy: http-only
-
         Enabled: True
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: allow-all 
+          TargetOriginId: CapstoneOriginTarget
+        Origins:
+          - Id: CapstoneOrigin
+            DomainName: !Sub "${BackendDNS}"
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+        
+        
 Outputs:
   BackendEndpoint:
     Value: !Sub ${BackendDNS}
