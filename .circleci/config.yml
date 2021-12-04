@@ -105,7 +105,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/deploy/ansible/inventory.txt
+            - ~/repo/deploy/ansible/inventory.txt
  
   configure-infrastructure:
     working_directory: ~/repo
@@ -129,7 +129,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-             cd /home/circleci/repo/deploy/ansible
+             cd ~/repo/deploy/ansible
              echo "$DOCKER_PASSWORD" > docker_password.txt
             # ansible-playbook -i inventory.txt configure-server.yml
             # ansible-playbook --private-key secrets/udacity.pem -i deploy/ansible/inventory.txt deploy/ansible/configure-server.yml
@@ -148,6 +148,6 @@ workflows:
             branches:
               only: main
       - configure-infrastructure:
-          requires: [create-infrastructure]
+          requires: [test-images,create-infrastructure]
 
           
