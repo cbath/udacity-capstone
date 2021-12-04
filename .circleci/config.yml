@@ -54,18 +54,18 @@ jobs:
             docker container run -d -p 8080:80  $DOCKER_ACCOUNT/hello_app
             curl localhost:8080
 
-    scan-images:
-        machine: true 
-        working_directory: ~/repo
-        steps:
-          - run:
+  scan-images:
+      machine: true 
+      working_directory: ~/repo
+      steps:
+        - run:
             name: Download Images
             command: |
               echo "$DOCKER_PASSWORD" > docker_password.txt
               cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
               docker pull $DOCKER_ACCOUNT/hello_app
               docker image tag $DOCKER_ACCOUNT/hello_app hello_app:latest
-          - run:
+        - run:
             name: Scan Images
             command: |
                 docker scan hello_app
