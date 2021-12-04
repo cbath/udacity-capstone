@@ -23,6 +23,7 @@
   environment:
     - DEBIAN_FRONTEND: noninteractive
     - DOCKER_ACCOUNT: "{{ lookup('env', '$DOCKER_ACCOUNT')}}"
+    - DOCKER_PASSWORD: "{{ lookup('env', '$DOCKER_PASSWORD')}}"
 
   roles:
     - configure-server

@@ -78,6 +78,34 @@ jobs:
   #        command: |
   #            docker scan hello_app
 
+  create-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          command: yum install -y tar gzip
+      - run:
+          name: Create Backend Infrastructure
+          command: |
+              export dir=deploy/cloudformation/servers
+              aws cloudformation deploy \
+              --template-file $dir/servers.yml \
+              --stack-name "capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --tags project=capstone
+      - run:
+          name: Add backend ip to ansible inventory
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend--${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
+            echo $BACKEND_IP >> .circleci/ansible/inventory.txt
+            echo $BACKEND_IP
+      # Save workspace for subsequent jobs (i.e. test)
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/deploy/ansible/inventory.txt
+ 
   configure-infrastructure:
     working_directory: ~/repo
     docker:
@@ -93,7 +121,6 @@ jobs:
       - attach_workspace:
           name: Attach Workspace
           at: ~/
-      
       - add_ssh_keys:
           name: Add ssh keys with fingerprint
           fingerprints:
@@ -102,6 +129,7 @@ jobs:
           name: Configure server
           command: |
              cd /home/circleci/repo/deploy/ansible
+             echo "$DOCKER_PASSWORD" > docker_password.txt
             # ansible-playbook -i inventory.txt configure-server.yml
             # ansible-playbook --private-key secrets/udacity.pem -i deploy/ansible/inventory.txt deploy/ansible/configure-server.yml
                
@@ -114,9 +142,11 @@ workflows:
           context: slack-secrets
       #- scan-images:
       #    requires: [build-images]
-      - configure-infrastructure:
+      - create-infrastructure:
           filters:
             branches:
-              only: main-never
+              only: main
+      - configure-infrastructure:
+          requires: [create-infrastructure]
 
           
