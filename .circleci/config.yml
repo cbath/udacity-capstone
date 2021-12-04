@@ -99,13 +99,13 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
-            echo $BACKEND_IP >> /tmp/inventory.txt
+            echo $BACKEND_IP > /tmp/backend_ip.txt
             echo $BACKEND_IP
       # Save workspace for subsequent jobs (i.e. test)
       - persist_to_workspace:
           root: /tmp
           paths:
-            - inventory.txt
+            - backend_ip.txt
  
   configure-infrastructure:
     working_directory: ~/repo
@@ -129,7 +129,7 @@ jobs:
           name: Configure server
           command: |
              cd ~/repo/deploy/ansible
-             cp /tmp/inventory.txt .
+             echo cat /tmp/backend_ip.txt >> inventory.txt
              echo "$DOCKER_PASSWORD" > docker_password.txt
              cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
