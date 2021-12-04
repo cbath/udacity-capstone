@@ -27,33 +27,33 @@ jobs:
           command: |
             docker push cbath/hello_app
 
-    test-images:
-        machine: true 
-        working_directory: ~/repo
-        steps:
-          - checkout
-          - run:
-              name: Install Dependencies
-              command: |
-                sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
-                sudo chmod +x /bin/hadolint
-          - run:
-            name: Lint Images
-            command: |
-              cd /home/circleci/repo
-              hadolint apache.Dockerfile
-          - run:
-            name: Download Images
-            command: |
-              echo "$DOCKER_PASSWORD" > docker_password.txt
-              cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
-              docker pull $DOCKER_ACCOUNT/hello_app
-          - run:
-            name: Test Images
-            command: |
-              docker container run -d -p 8080:80  $DOCKER_ACCOUNT/hello_app
-              curl localhost:8080
-              
+  test-images:
+    machine: true 
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
+            sudo chmod +x /bin/hadolint
+      - run:
+          name: Lint Images
+          command: |
+            cd /home/circleci/repo
+            hadolint apache.Dockerfile
+      - run:
+          name: Download Images
+          command: |
+            echo "$DOCKER_PASSWORD" > docker_password.txt
+            cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
+            docker pull $DOCKER_ACCOUNT/hello_app
+      - run:
+          name: Test Images
+          command: |
+            docker container run -d -p 8080:80  $DOCKER_ACCOUNT/hello_app
+            curl localhost:8080
+
     scan-images:
         machine: true 
         working_directory: ~/repo
