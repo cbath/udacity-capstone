@@ -78,23 +78,6 @@ jobs:
           event: fail
           template: basic_fail_1
       
-  # https://docs.docker.com/engine/scan/
-  #scan-images:
-  #  machine: true 
-  #  working_directory: ~/repo
-  #  steps:
-  #    - run:
-  #        name: Download Images
-  #        command: |
-  #          echo "$DOCKER_PASSWORD" > docker_password.txt
-  #          cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
-  #          docker pull $DOCKER_ACCOUNT/hello_app
-  #          docker image tag $DOCKER_ACCOUNT/hello_app hello_app:latest
-  #    - run:
-  #        name: Scan Images
-  #        command: |
-  #            docker scan hello_app
-
   create-infrastructure:
     working_directory: ~/repo
     docker:
@@ -106,12 +89,23 @@ jobs:
       - run:
           name: Create Backend Infrastructure
           command: |
-              export dir=~/repo/deploy/cloudformation/servers
+              cd ~/repo/deploy/cloudformation/servers
               aws cloudformation deploy \
-              --template-file $dir/servers.yml \
+              --template-file servers.yml \
               --stack-name "capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=capstone
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
+            echo $BACKEND_IP >> ~/inventory.txt
+            echo $BACKEND_IP
+      # Save workspace for subsequent jobs (i.e. test)
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - inventory.txt
  
   configure-infrastructure:
     working_directory: ~/repo
@@ -124,20 +118,18 @@ jobs:
           command: |
             yum install -y epel-release
             yum install -y tar gzip ansible
+      - attach_workspace:
+          name: Attach Workspace
+          at: ~/
       - add_ssh_keys:
           name: Add ssh keys with fingerprint
           fingerprints:
             - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
       - run:
-          name: Add backend ip to ansible inventory
-          command: |
-            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
-            echo $BACKEND_IP >> ~/repo/deploy/ansible/inventory.txt
-            echo $BACKEND_IP
-      - run:
           name: Configure server
           command: |
              cd ~/repo/deploy/ansible
+             cp ~/inventory.txt .
              echo "$DOCKER_PASSWORD" > docker_password.txt
              cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
@@ -145,6 +137,22 @@ jobs:
       # Here's where you will add some code to rollback on failure   
       #- destroy-environment:
       #      workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+
+  cloudfront-update:
+    working_directory: ~/repo
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            cd ~/repo/deploy/cloudformation/cloudfront
+            aws cloudformation deploy \
+            --template-file cloudfront.yml \
+            --stack-name CapstoneCloudFront \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
                
 workflows:
   default:
