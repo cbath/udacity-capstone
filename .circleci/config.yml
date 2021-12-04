@@ -131,7 +131,7 @@ jobs:
           command: |
              cd ~/repo/deploy/ansible
              echo "$DOCKER_PASSWORD" > docker_password.txt
-            # ansible-playbook -i inventory.txt configure-server.yml
+             ansible-playbook -i inventory.txt configure-server.yml
             # ansible-playbook --private-key secrets/udacity.pem -i deploy/ansible/inventory.txt deploy/ansible/configure-server.yml
                
 workflows:

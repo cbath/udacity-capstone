@@ -1,6 +1,6 @@
 ---
 
-- name: "configuration play." 
+- name: Server Configuration Play
   hosts: backend
   user: ubuntu
   become: true
@@ -11,13 +11,6 @@
     - ansible_python_interpreter: /usr/bin/python3
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
-
-  pre_tasks:
-    - name: Confirm Server Access
-      shell: echo curl ifconfig.io
-
-  post_tasks:
-     - shell: echo "Done configuring server"
 
   # Get the environment variables from CircleCI and add to the EC2 instance
   environment:
