@@ -148,11 +148,8 @@ jobs:
           name: Update cloudfront distribution
           command: |
             cd ~/repo/deploy/cloudformation/cloudfront
-            aws cloudformation deploy \
-            --template-file cloudfront.yml \
-            --stack-name CapstoneCloudFront \
-            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
-            --tags project=udapeople
+            export BACKEND_DOMAIN=TODO
+            aws cloudformation deploy --template-file cloudfront.yml --stack-name "UdacityCapstone" --parameter-overrides BackendDNS=$BACKEND_DOMAIN"
                
 workflows:
   default:
