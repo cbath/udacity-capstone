@@ -99,11 +99,11 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
-            echo $BACKEND_IP >> ~/inventory.txt
+            echo $BACKEND_IP >> /tmp/inventory.txt
             echo $BACKEND_IP
       # Save workspace for subsequent jobs (i.e. test)
       - persist_to_workspace:
-          root: ~/
+          root: /tmp
           paths:
             - inventory.txt
  
@@ -120,7 +120,7 @@ jobs:
             yum install -y tar gzip ansible
       - attach_workspace:
           name: Attach Workspace
-          at: ~/
+          at: /tmp
       - add_ssh_keys:
           name: Add ssh keys with fingerprint
           fingerprints:
@@ -129,7 +129,7 @@ jobs:
           name: Configure server
           command: |
              cd ~/repo/deploy/ansible
-             cp ~/inventory.txt .
+             cp /tmp/inventory.txt .
              echo "$DOCKER_PASSWORD" > docker_password.txt
              cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
