@@ -13,17 +13,21 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: True
-        DefaultCacheBehavior:
-          ViewerProtocolPolicy: allow-all 
-          TargetOriginId: CapstoneOrigin
         Origins:
           - Id: CapstoneOrigin
             DomainName: !Sub "${BackendDNS}"
             CustomOriginConfig:
               OriginProtocolPolicy: http-only
-        
+        DefaultCacheBehavior:
+          ForwardedValues:
+            QueryString: False
+          TargetOriginId: CapstoneOrigin
+          ViewerProtocolPolicy: allow-all
         
 Outputs:
   BackendEndpoint:
     Value: !Sub ${BackendDNS}
     Description: Backend Endpoint
+  ClopudFrontEndpoint:
+    Value: !GetAtt WebpageCDN.DomainName
+    Description: CloudFront DNS
