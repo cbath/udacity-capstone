@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.1
+
 jobs:
   build-images:
     machine: true           #https://circleci.com/docs/2.0/building-docker-images/
@@ -53,6 +56,11 @@ jobs:
           command: |
             docker container run -d -p 8080:80  $DOCKER_ACCOUNT/hello_app
             curl localhost:8080
+      - slack/notify:
+          channel: 'udacity-ci-cd'
+          event: fail
+          template: basic_fail_1
+      
   # https://docs.docker.com/engine/scan/
   #scan-images:
   #  machine: true 
@@ -69,6 +77,31 @@ jobs:
   #        name: Scan Images
   #        command: |
   #            docker scan hello_app
+
+  configure-infrastructure:
+    docker:
+      - image: centos:centos8
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y epel-release
+            yum install -y tar gzip ansible
+      # Reuse the workspace from the build job
+      - attach_workspace:
+          name: Attach Workspace
+          at: ~/
+      
+      - add_ssh_keys:
+          name: Add ssh keys with fingerprint
+          fingerprints:
+            - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            # ansible-playbook -i inventory.txt configure-server.yml
                
 workflows:
   default:
@@ -76,7 +109,12 @@ workflows:
       - build-images
       - test-images:
           requires: [build-images]
+          context: slack-secrets
       #- scan-images:
       #    requires: [build-images]
+      - configure-infrastructure:
+          filters:
+            branches:
+              only: main-never
 
           

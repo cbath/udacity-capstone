@@ -21,14 +21,17 @@
     state: latest
     update_cache: yes
 
-- name: "install pm2"
-  become: yes
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+# https://docs.ansible.com/ansible/2.4/copy_module.html
+- name: Copy Docker Credentials
+  copy:
+    src: ~/project/secrets/docker_password.txt
+    dest: ~/docker_password.txt
+    mode: 0400
 
-- name: Confirm access
+- name: Log into Docker
+  shell: |
+    cat docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
+
+- name: Log into Docker
   shell: |
     echo "well hello there" > /tmp/hello.txt

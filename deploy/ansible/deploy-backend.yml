@@ -1,7 +1,7 @@
 ---
 
 - name: "Deploy Backend" 
-  hosts: web
+  hosts: backend
   user: ubuntu
   gather_facts: false
   vars:
