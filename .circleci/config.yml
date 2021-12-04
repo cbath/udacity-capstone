@@ -79,6 +79,7 @@ jobs:
   #            docker scan hello_app
 
   configure-infrastructure:
+    working_directory: ~/repo
     docker:
       - image: centos:centos8
     steps:
@@ -100,8 +101,9 @@ jobs:
       - run:
           name: Configure server
           command: |
-            cd .circleci/ansible
+             cd /home/circleci/repo/deploy/ansible
             # ansible-playbook -i inventory.txt configure-server.yml
+            # ansible-playbook --private-key secrets/udacity.pem -i deploy/ansible/inventory.txt deploy/ansible/configure-server.yml
                
 workflows:
   default:
