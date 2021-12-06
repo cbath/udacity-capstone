@@ -235,8 +235,10 @@ workflows:
               only: main
       - configure-infrastructure:
           requires: [create-infrastructure]
-      - smoke-test:
+      - deploy-backend:
           requires: [configure-infrastructure]
-      - promote-infrastructure:
+      - smoke-test:
+          requires: [deploy-backend]
+      - promote-backend:
           requires: [smoke-test]
           

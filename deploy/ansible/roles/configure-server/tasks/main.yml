@@ -21,9 +21,10 @@
     state: latest
     update_cache: yes
 
-# https://docs.ansible.com/ansible/2.4/copy_module.html
-#- name: Copy Docker Credentials
-#  copy:
-#    src: ~/secrets/docker_password.txt
-#    dest: ~/docker_password.txt
-#    mode: 0400
+# https://ubuntu.com/kubernetes/install
+- name: Setup Kubernetes Node
+  become: yes
+  shell: |
+    echo "Setting up Node"
+#sudo docker container run -d -p 80:80 cbath/hello_app
+#kubectl run $myapp --image=$imagename --port=80 --labels app=hello_app
