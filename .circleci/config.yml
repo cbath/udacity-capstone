@@ -61,7 +61,9 @@ jobs:
           name: Lint Images
           command: |
             cd /home/circleci/repo
-            hadolint apache.Dockerfile
+            echo "Linting Dockerifles..."
+            LINT_ISSUES=$(hadolint apache.Dockerfile)
+            echo "Lint issues - $LINT_ISSUES"
       - run:
           name: Download Images
           command: |
@@ -104,7 +106,6 @@ jobs:
             BACKEND_DNS=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_dns:PublicDnsName}" --output text)
             echo $BACKEND_DNS > /tmp/backend_dns.txt
             echo $BACKEND_DNS
-
       # Save workspace for subsequent jobs (i.e. test)
       - persist_to_workspace:
           root: /tmp
@@ -119,7 +120,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install Dependencies
           command: |
             yum install -y epel-release
             yum install -y tar gzip ansible
@@ -131,15 +132,41 @@ jobs:
           fingerprints:
             - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
       - run:
-          name: Configure server
+          name: Configure Servers
           command: |
              cd ~/repo/deploy/ansible
              echo $(cat /tmp/backend_ip.txt) >> inventory.txt
              echo "$DOCKER_PASSWORD" > docker_password.txt
              cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
-             ansible-playbook -i inventory.txt deploy-backend.yml
 
+      #- destroy-environment:
+       #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+  deploy-backend:
+    working_directory: ~/repo
+    docker:
+      - image: centos:centos8
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            yum install -y epel-release
+            yum install -y tar gzip ansible
+      - attach_workspace:
+          name: Attach Workspace
+          at: /tmp
+      - add_ssh_keys:
+          name: Add ssh keys with fingerprint
+          fingerprints:
+            - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
+      - run:
+          name: Deploy Backend
+          command: |
+             cd ~/repo/deploy/ansible
+             echo $(cat /tmp/backend_ip.txt) >> inventory.txt
+             cat inventory.txt
+             ansible-playbook -i inventory.txt deploy-backend.yml
       #- destroy-environment:
        #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
@@ -168,7 +195,7 @@ jobs:
              echo $(cat /tmp/backend_ip.txt) >> inventory.txt
              ansible-playbook -i inventory.txt test-backend.yml
 
-  promote-infrastructure:
+  promote-backend:
     working_directory: ~/repo
     docker:
       - image: amazon/aws-cli

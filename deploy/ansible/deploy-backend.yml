@@ -1,6 +1,6 @@
 ---
 
-- name: Backend Server Deployment Plau
+- name: Backend Server Deployment Play
   hosts: backend
   user: ubuntu
   become: true
@@ -19,5 +19,5 @@
     - DOCKER_PASSWORD: "{{ lookup('env', '$DOCKER_PASSWORD')}}"
 
   roles:
-    - deploy-backend
+    - deploy
 
