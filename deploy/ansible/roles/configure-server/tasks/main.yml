@@ -21,10 +21,21 @@
     state: latest
     update_cache: yes
 
-# https://ubuntu.com/kubernetes/install
-- name: Setup Kubernetes Node
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/  & https://minikube.sigs.k8s.io/docs/start/
+- name: Install Kubectl & Minikube
   become: yes
   shell: |
-    echo "Setting up Node"
+    echo "Setting up Kubernetes Node"
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    echo $(kubectl version --client)
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+- name: Start Cluster
+  become: yes
+  shell: |
+    sudo minikube start
+
 #sudo docker container run -d -p 80:80 cbath/hello_app
 #kubectl run $myapp --image=$imagename --port=80 --labels app=hello_app

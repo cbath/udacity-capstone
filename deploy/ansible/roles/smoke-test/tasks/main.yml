@@ -1,6 +1,5 @@
 ---
 - name: Test Container Response
-  become: yes
   shell: |
     export RESPONSE=$(curl localhost:80)
-    echo $RESPONSE
+    echo "$RESPONSE"
