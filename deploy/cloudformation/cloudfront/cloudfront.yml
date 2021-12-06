@@ -28,6 +28,6 @@ Outputs:
   BackendEndpoint:
     Value: !Sub ${BackendDNS}
     Description: Backend Endpoint
-  ClopudFrontEndpoint:
+  CloudFrontEndpoint:
     Value: !GetAtt WebpageCDN.DomainName
     Description: CloudFront DNS

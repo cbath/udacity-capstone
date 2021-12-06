@@ -96,16 +96,21 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=capstone
       - run:
-          name: Add back-end ip to ansible inventory
+          name: Find Backend Server Details
           command: |
             BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_ip:PublicIpAddress}" --output text)
             echo $BACKEND_IP > /tmp/backend_ip.txt
             echo $BACKEND_IP
+            BACKEND_DNS=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=capstone-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[*].Instances[*].{public_dns:PublicDnsName}" --output text)
+            echo $BACKEND_DNS > /tmp/backend_dns.txt
+            echo $BACKEND_DNS
+
       # Save workspace for subsequent jobs (i.e. test)
       - persist_to_workspace:
           root: /tmp
           paths:
             - backend_ip.txt
+            - backend_dns.txt
  
   configure-infrastructure:
     working_directory: ~/repo
@@ -133,24 +138,54 @@ jobs:
              echo "$DOCKER_PASSWORD" > docker_password.txt
              cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
-            # ansible-playbook --private-key secrets/udacity.pem -i deploy/ansible/inventory.txt deploy/ansible/configure-server.yml
-
       #- destroy-environment:
-      #      workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+       #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
-  cloudfront-update:
+  smoke-test:
+    working_directory: ~/repo
+    docker:
+      - image: centos:centos8
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y epel-release
+            yum install -y tar gzip ansible
+      - attach_workspace:
+          name: Attach Workspace
+          at: /tmp
+      - add_ssh_keys:
+          name: Add ssh keys with fingerprint
+          fingerprints:
+            - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
+      - run:
+          name: Configure server
+          command: |
+             cd ~/repo/deploy/ansible
+             echo $(cat /tmp/backend_ip.txt) >> inventory.txt
+             ansible-playbook -i inventory.txt test-backend.yml
+
+  promote-infrastructure:
     working_directory: ~/repo
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - attach_workspace:
+          name: Attach Workspace
+          at: /tmp
       - run:
           name: Update cloudfront distribution
           command: |
             cd ~/repo/deploy/cloudformation/cloudfront
-            export BACKEND_DOMAIN=TODO
-            aws cloudformation deploy --template-file cloudfront.yml --stack-name "UdacityCapstone" --parameter-overrides BackendDNS=$BACKEND_DOMAIN"
-               
+            export BACKEND_DNS=$(cat /tmp/backend_dns.txt)
+            echo $BACKEND_DNS
+            aws cloudformation deploy\
+              --template-file cloudfront.yml\
+              --stack-name "UdacityCapstone"\
+              --parameter-overrides BackendDNS=$BACKEND_DNS
+
 workflows:
   default:
     jobs:
@@ -167,5 +202,8 @@ workflows:
               only: main
       - configure-infrastructure:
           requires: [create-infrastructure]
-
+      - smoke-test:
+          requires: [configure-infrastructure]
+      - promote-infrastructure:
+          requires: [smoke-test]
           

@@ -1,0 +1,5 @@
+---
+- name: Test Container Response
+  become: yes
+  shell: |
+    curl localhost:80
