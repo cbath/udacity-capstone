@@ -2,4 +2,5 @@
 - name: Test Container Response
   become: yes
   shell: |
-    curl localhost:80
+    export RESPONSE=$(curl localhost:80)
+    echo $RESPONSE

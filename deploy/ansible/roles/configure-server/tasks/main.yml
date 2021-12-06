@@ -27,20 +27,3 @@
 #    src: ~/secrets/docker_password.txt
 #    dest: ~/docker_password.txt
 #    mode: 0400
-
-- name: Log into Docker
-  become: yes
-  shell: |
-    sudo echo "$DOCKER_PASSWORD" > /tmp/docker_password.txt
-    #sudo cat /tmp/docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
-    #sudo docker login --username $DOCKER_ACCOUNT --password $DOCKER_PASSWORD
-
-- name: Download Images
-  become: yes
-  shell: |
-    sudo docker pull cbath/hello_app
-
-- name: Deploy Containers
-  become: yes
-  shell: |
-    sudo docker container run -d -p 80:80 cbath/hello_app

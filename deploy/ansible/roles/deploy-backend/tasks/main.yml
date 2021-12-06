@@ -1,0 +1,26 @@
+---
+- name: Log into Docker
+  become: yes
+  shell: |
+    sudo echo "$DOCKER_PASSWORD" > /tmp/docker_password.txt
+#sudo cat /tmp/docker_password.txt | docker login --username $DOCKER_ACCOUNT --password-stdin
+#sudo docker login --username $DOCKER_ACCOUNT --password $DOCKER_PASSWORD
+
+- name: Download Images
+  become: yes
+  shell: |
+    sudo docker pull cbath/hello_app
+
+- name: Deploy Containers
+  become: yes
+  shell: |
+    sudo docker container run -d -p 80:80 cbath/hello_app
+    #kubectl run $myapp --image=$imagename --port=80 --labels app=hello_app
+
+#- name: Update Port Listening for Cluster
+#  become: yes
+#  shell: |
+#    system sleep 60s
+#    kubectl get pods
+#    kubectl port-forward hello_app 80:80
+#    kubectl get pods $myapp -o jsonpath='{.spec.containers[*].name}'

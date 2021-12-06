@@ -138,6 +138,8 @@ jobs:
              echo "$DOCKER_PASSWORD" > docker_password.txt
              cat inventory.txt
              ansible-playbook -i inventory.txt configure-server.yml
+             ansible-playbook -i inventory.txt deploy-backend.yml
+
       #- destroy-environment:
        #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
@@ -160,7 +162,7 @@ jobs:
           fingerprints:
             - "e8:92:03:fd:e6:2d:df:65:71:97:7b:5e:fc:ac:25:91"
       - run:
-          name: Configure server
+          name: Run Smoke Tests
           command: |
              cd ~/repo/deploy/ansible
              echo $(cat /tmp/backend_ip.txt) >> inventory.txt
