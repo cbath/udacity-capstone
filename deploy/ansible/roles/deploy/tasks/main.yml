@@ -11,16 +11,15 @@
   shell: |
     sudo docker pull cbath/hello_app
 
-- name: Deploy Containers
+- name: Deploy Pods
   become: yes
   shell: |
-    sudo docker container run -d -p 80:80 cbath/hello_app
-    #kubectl run $myapp --image=$imagename --port=80 --labels app=hello_app
+    #sudo docker container run -d -p 80:80 cbath/hello_app
+    sudo kubectl run hello-app --image=cbath/hello_app --port=80 --labels app=hello-app
+    sudo kubectl port-forward hello-app 80:80
 
-#- name: Update Port Listening for Cluster
-#  become: yes
-#  shell: |
-#    system sleep 60s
-#    kubectl get pods
-#    kubectl port-forward hello_app 80:80
-#    kubectl get pods $myapp -o jsonpath='{.spec.containers[*].name}'
+- name: Update Port Listening for Cluster
+  become: yes
+  shell: |
+    echo $(sudo kubectl get pods)
+    echo $(sudo kubectl get pods $myapp -o jsonpath='{.spec.containers[*].name}')
