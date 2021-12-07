@@ -63,7 +63,7 @@ jobs:
             cd /home/circleci/repo
             echo "Linting Dockerifles..."
             export LINT_ISSUES=$(hadolint apache.Dockerfile)
-            if [ ${#string} -ge 1 ]; then echo echo "Lint issues - $LINT_ISSUES" ; exit 1
+            if [ ${#LINT_ISSUES} -ge 1 ]; then echo echo "Lint issues - $LINT_ISSUES" ; exit 1
             else echo "done"
             fi
             
