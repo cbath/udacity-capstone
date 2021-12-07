@@ -62,7 +62,7 @@ jobs:
           command: |
             cd /home/circleci/repo
             echo "Linting Dockerifles..."
-            LINT_ISSUES=$(hadolint apache.Dockerfile)
+            export LINT_ISSUES=$(hadolint apache.Dockerfile)
             echo "Lint issues - $LINT_ISSUES"
       - run:
           name: Download Images
