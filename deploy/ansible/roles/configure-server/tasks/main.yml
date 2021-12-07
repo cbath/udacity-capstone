@@ -36,6 +36,3 @@
   become: yes
   shell: |
     sudo minikube start --driver=none
-
-#sudo docker container run -d -p 80:80 cbath/hello_app
-#kubectl run $myapp --image=$imagename --port=80 --labels app=hello_app
