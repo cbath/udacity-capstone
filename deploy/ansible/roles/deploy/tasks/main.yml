@@ -21,5 +21,6 @@
   become: yes
   shell: |
     system sleep 120s
+    sudo kubectl port-forward hello-app 80:80
     echo $(sudo kubectl get pods)
     echo $(sudo kubectl get pods hello-app -o jsonpath='{.spec.containers[*].name}')
