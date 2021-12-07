@@ -1,34 +1,38 @@
-# udacity-captstone
+# Capstone Proposal
 
-## Step 1: Propose and Scope the Project
+For my capstone project i'd like to showcase a working POC of how, through the use of containerisation, how quickly we could implement a full CI/CD pipeline that brings immediate benefits to my company
 
-Plan what your pipeline will look like.
-Decide which options you will include in your Continuous Integration phase. Use either Circle CI or Jenkins.
-Pick a deployment type - either rolling deployment or blue/green deployment.
-For the Docker application you can either use an application which you come up with, or use an open-source application pulled from the Internet, or if you have no idea, you can use an Nginx “Hello World, my name is (student name)” application.
+## Features to Showcase
 
-## Step 2: Use Jenkins or Circle CI, and implement blue/green or rolling deployment.
+### Automation
 
-If you're using Jenkins, create your Jenkins master box and install the plugins you will need.
-If you're using Circle CI, set up your circle CI account and connect your git repository.
-Set up your environment to which you will deploy code.
+I want to highlight how we can bring an automation framework very easily and one that can be expanded as the complexity of the product also increases. 
 
-## Step 3: Pick AWS Kubernetes as a Service, or build your own Kubernetes cluster.
+I will show case these by focusing on:
+- CI/CD Pipeline
+- Linting & Testing on every push
+- Deployments triggered by events
+- Frequency of deployments
 
-Use Ansible or CloudFormation to build your “infrastructure”; i.e., the Kubernetes Cluster.
-It should create the EC2 instances (if you are building your own), set the correct networking settings, and deploy software to these instances.
-As a final step, the Kubernetes cluster will need to be initialized. The Kubernetes cluster initialization can either be done by hand, or with Ansible/Cloudformation at the student’s discretion.
+### Infrastructure as Code
 
-## Step 4: Build your pipeline
+For this i'd like to focus on how this will allow us to progress as a GitOps project by highlighting the major benefits of IAC:
 
-Construct your pipeline in your GitHub repository.
-Set up all the steps that your pipeline will include.
-Configure a deployment pipeline.
-Include your Dockerfile/source code in the Git repository.
-Include with your Linting step both a failed Linting screenshot and a successful Linting screenshot to show the Linter working properly.
+- Infrastructure can now be peer reviewed as part of regular coding practices
+- Reduce the risk of issue by removing any manual work
 
-## Step 5: Test your pipeline
+### Visability
 
-Perform builds on your pipeline.
-Verify that your pipeline works as you designed it.
-Take a screenshot of the Circle CI or Jenkins pipeline showing deployment, and a screenshot of your AWS EC2 page showing the newly created (for blue/green) or modified (for rolling) instances. Make sure you name your instances differently between blue and green deployments.
+DevOps is the combination of "Dev" & "Ops" and as such i'd like to focus on bringing visibility and access to our entire CI/CD pipeline to as many teams as possible. The main aims here are to:
+
+- Promote transparency
+- Integrate teams and highlight our common goals
+- Fascilitating any developer being able to improve their own CI/CD pipeline and to feel part of the process. DevOps' aim to automate work for as many people as possible
+- Show when things are not working as well as when they are not
+
+### Blue/Green Deployments
+
+This will be an essential selling point to the business as it represents:
+
+- A massive reduction in deployment risk
+- Allows us to deploy more often and bring features to users more often
