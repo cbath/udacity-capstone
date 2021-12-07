@@ -22,4 +22,4 @@
   shell: |
     system sleep 120s
     echo $(sudo kubectl get pods)
-    echo $(sudo kubectl get pods $myapp -o jsonpath='{.spec.containers[*].name}')
+    echo $(sudo kubectl get pods hello-app -o jsonpath='{.spec.containers[*].name}')
