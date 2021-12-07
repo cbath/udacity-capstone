@@ -17,6 +17,7 @@
     sudo kubectl run hello-app --image=cbath/hello_app --port=80 --labels app=hello-app
 #sudo docker container run -d -p 80:80 cbath/hello_app
 
+# https://stackoverflow.com/questions/48863164/kubernetes-prompt-freezes-at-port-forward-command
 - name: Update Port Listening for Cluster
   become: yes
   shell: |
