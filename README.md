@@ -9,6 +9,7 @@ For my capstone project i'd like to showcase a working POC of how, through the u
 I want to highlight how we can bring an automation framework very easily and one that can be expanded as the complexity of the product also increases. 
 
 I will show case these by focusing on:
+
 - CI/CD Pipeline
 - Linting & Testing on every push
 - Deployments triggered by events
