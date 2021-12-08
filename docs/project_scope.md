@@ -36,4 +36,3 @@ This will be an essential selling point to the business as it represents:
 
 - A massive reduction in deployment risk
 - Allows us to deploy more often and bring features to users more often
-
