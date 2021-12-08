@@ -235,7 +235,7 @@ workflows:
           requires: [test-images]
           filters:
             branches:
-              only: main
+              only: main-fake
       - configure-infrastructure:
           requires: [create-infrastructure]
       - deploy-backend:
